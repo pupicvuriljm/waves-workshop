@@ -32,18 +32,33 @@ levels = np.arange(-12, 22, 3)
 colorscale = "Magma"
 
 # -------------------------
-# Initialize Dash app
+# Initialize and customize Dash app
 # -------------------------
 app = Dash(__name__)
 
 app.layout = html.Div([
-    html.H1("Lag Map North Sea"),
-    dcc.Dropdown(
-        id='station-dropdown',
-        options=[{'label': station_info.set_index('filename').loc[s, 'name'], 'value': s} for s in stations],
-        value=stations[0]
-    ),
-    dcc.Graph(id='lag-map')
+    html.H1("Lag Map North Sea", style={'textAlign': 'center'}),
+    html.Div(
+        style={'display': 'flex', 'alignItems': 'flex-start'},
+        children=[
+            html.Div(
+                style={'width': '40%', 'padding': '10px'},
+                children=[
+                    dcc.Dropdown(
+                        id='station-dropdown',
+                        options=[{'label': station_info.set_index('filename').loc[s, 'name'], 'value': s} for s in stations],
+                        value=stations[0]
+                    )
+                ]
+            ),
+            html.Div(
+                style={'width': '80%'},
+                children=[
+                    dcc.Graph(id='lag-map', style={'height': '90vh'})
+                ]
+            )
+        ]
+    )
 ])
 
 # -------------------------
@@ -82,12 +97,12 @@ def update_figure(ref_station):
                 tickmode="array",
                 orientation="h",
                 lenmode="fraction",
-                len=0.7,
+                len=0.9,
                 x=0.5,
                 xanchor="center",
-                y=-0.15,
+                y=0,
                 yanchor="top",
-                thickness=20
+                thickness=15
             )
         ),
         name='Lag',
@@ -117,7 +132,7 @@ def update_figure(ref_station):
             lataxis=dict(range=[49, 63]),
             lonaxis=dict(range=[-5, 12])
         ),
-        margin=dict(l=5, r=10, t=30, b=10)
+        margin=dict(l=5, r=5, t=30, b=5)
     )
 
     return fig
@@ -125,5 +140,5 @@ def update_figure(ref_station):
 # -------------------------
 # Run the app
 # -------------------------
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=False, host="0.0.0.0", port=10000)
