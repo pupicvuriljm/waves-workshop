@@ -93,9 +93,9 @@ def update_figure(ref_station):
                 ticktext=[f"{levels[i]} to {levels[i+1]}" for i in range(len(levels)-1)],
                 tickmode="array",
                 orientation="v",       # vertical
-                len=0.7,
+                len=0.5,
                 x=1.02,               # slightly to the right of map
-                y=0.6,
+                y=0.5,
                 xanchor="left",
                 yanchor="middle",
                 thickness=20
@@ -121,7 +121,7 @@ def update_figure(ref_station):
         text=f"Lag relative to {station_info.set_index('filename').loc[ref_station, 'name']}",
         x=0,
         xanchor='left',
-        y=0.93,     # (1.0 is top)
+        y=0.95,     # (1.0 is top)
         yanchor='top'
         ),
         geo=dict(
