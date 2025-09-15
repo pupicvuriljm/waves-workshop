@@ -32,31 +32,28 @@ levels = np.arange(-12, 22, 3)
 colorscale = "Magma"
 
 # -------------------------
-# Initialize and customize Dash app
+# Initialize Dash app
 # -------------------------
 app = Dash(__name__)
 
 app.layout = html.Div([
-    html.H1("Lag Map North Sea", style={'textAlign': 'center'}),
+    html.H1("Interpolated surge series lag North Sea", style={'textAlign': 'center'}),
+    
+    # Dropdown above the graph
     html.Div(
-        style={'display': 'flex', 'alignItems': 'flex-start'},
+        style={'width': '40%', 'padding': '10px'},  # centered
         children=[
-            html.Div(
-                style={'width': '40%', 'padding': '10px'},
-                children=[
-                    dcc.Dropdown(
-                        id='station-dropdown',
-                        options=[{'label': station_info.set_index('filename').loc[s, 'name'], 'value': s} for s in stations],
-                        value=stations[0]
-                    )
-                ]
-            ),
-            html.Div(
-                style={'width': '80%'},
-                children=[
-                    dcc.Graph(id='lag-map', style={'height': '90vh'})
-                ]
+            dcc.Dropdown(
+                id='station-dropdown',
+                options=[{'label': station_info.set_index('filename').loc[s, 'name'], 'value': s} for s in stations],
+                value=stations[0]
             )
+        ]
+    ),
+    # Graph below
+    html.Div(
+        children=[
+            dcc.Graph(id='lag-map', style={'height': '90vh', 'width': '95%', 'margin': '0 auto'})
         ]
     )
 ])
@@ -95,15 +92,14 @@ def update_figure(ref_station):
                 tickvals=np.arange(len(levels)-1),
                 ticktext=[f"{levels[i]} to {levels[i+1]}" for i in range(len(levels)-1)],
                 tickmode="array",
-                orientation="h",
-                lenmode="fraction",
-                len=0.9,
-                x=0.5,
-                xanchor="center",
-                y=0,
-                yanchor="top",
-                thickness=15
-            )
+                orientation="v",       # vertical
+                len=0.7,
+                x=1.02,               # slightly to the right of map
+                y=0.6,
+                xanchor="left",
+                yanchor="middle",
+                thickness=20
+                )
         ),
         name='Lag',
         showlegend=False
@@ -121,7 +117,13 @@ def update_figure(ref_station):
 
     fig = go.Figure(data=[trace, station_trace])
     fig.update_layout(
-        title=f"Lag relative to {station_info.set_index('filename').loc[ref_station, 'name']}",
+        title=dict(
+        text=f"Lag relative to {station_info.set_index('filename').loc[ref_station, 'name']}",
+        x=0,
+        xanchor='left',
+        y=0.93,     # (1.0 is top)
+        yanchor='top'
+        ),
         geo=dict(
             scope='europe',
             projection_type='mercator',
